@@ -98,3 +98,30 @@ class VectorStore:
             if "source" in meta:
                 sources.add(meta["source"])
         return list(sources)
+
+    def delete_document(self, filename: str):
+        """Remove all chunks associated with a specific filename."""
+        # 1. Identify IDs to keep
+        remaining_metadata = {}
+        remaining_texts = []
+        
+        for meta in self.metadata.values():
+            if meta.get("source") != filename:
+                remaining_texts.append(meta["text"])
+                # We'll re-assign IDs starting from 0
+                new_id = str(len(remaining_texts) - 1)
+                remaining_metadata[new_id] = meta
+        
+        # 2. Rebuild the FAISS index
+        self.index = faiss.IndexFlatL2(self.dimension)
+        if remaining_texts:
+            embeddings = self.embedding_model.encode(remaining_texts)
+            embeddings_np = np.array(embeddings).astype('float32')
+            self.index.add(embeddings_np)
+            
+        # 3. Update metadata
+        self.metadata = remaining_metadata
+        
+        # 4. Save changes
+        self._save_index()
+        logger.info(f"Deleted document {filename}. Index now has {self.index.ntotal} vectors.")

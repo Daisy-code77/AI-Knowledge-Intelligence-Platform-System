@@ -1,0 +1,1 @@
+This is a test document about the AI Knowledge Platform. It uses RAG and FastAPI.

@@ -192,19 +192,37 @@ export default function SummaryDashboard({ documents }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="markdown-wrapper glass-panel"
-                style={{ padding: '32px', maxWidth: '800px', margin: '0 auto', fontSize: '1rem', lineHeight: '1.7', whiteSpace: 'pre-wrap' }}
+                className="glass-panel"
+                style={{ 
+                  padding: '40px', 
+                  maxWidth: '900px', 
+                  margin: '0 auto', 
+                  fontSize: '1rem', 
+                  lineHeight: '1.8', 
+                  whiteSpace: 'pre-wrap',
+                  color: 'var(--text-primary)',
+                  minHeight: '60vh'
+                }}
               >
                 {!data[activeView] ? (
-                  <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '48px 0' }}>
-                    Select an analysis tool from the left menu.
+                  <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '64px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ opacity: 0.5 }}><Brain size={48} /></div>
+                    <p>Select an analysis tool from the left menu to begin digging into your document.</p>
                   </div>
                 ) : activeView === 'graph' ? (
-                  <div style={{ width: '100%', height: '500px' }}>
+                  <div style={{ width: '100%', height: '600px', borderRadius: 'var(--radius-md)', overflow: 'hidden', backgroundColor: 'rgba(0,0,0,0.2)' }}>
                     <KnowledgeGraph data={data.graph} />
                   </div>
                 ) : (
-                  data[activeView]
+                  <div className="content-render">
+                    {/* Add a nice header for the specific tool */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid var(--border-color)' }}>
+                        {activeView === 'summary' && <><FileText className="text-accent" /> <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Executive Summary</h3></>}
+                        {activeView === 'flashcards' && <><BookOpen className="text-accent" /> <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Flashcards</h3></>}
+                        {activeView === 'quiz' && <><Cpu className="text-accent" /> <h3 style={{ margin: 0, fontSize: '1.5rem' }}>AI Quiz</h3></>}
+                    </div>
+                    {data[activeView]}
+                  </div>
                 )}
               </motion.div>
             )}

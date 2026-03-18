@@ -138,5 +138,22 @@ async def generate_graph_data(filename: str = Form(...)):
     result = ai_engine.generate_graph_data(abridged_text)
     return {"result": result}
 
+@app.delete(f"{settings.API_V1_STR}/documents/{{filename}}")
+async def delete_document(filename: str):
+    """Delete a document and its associated embeddings."""
+    try:
+        # 1. Remove from Vector Store
+        vector_store.delete_document(filename)
+        
+        # 2. Remove from Uploads folder
+        file_path = os.path.join(settings.UPLOAD_DIR, filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            
+        return {"status": "success", "message": f"Document {filename} deleted successfully."}
+    except Exception as e:
+        logger.error(f"Failed to delete document: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, FileText, MessageSquare, BrainCircuit, UploadCloud, Library, Share2 } from 'lucide-react';
+import { BookOpen, FileText, MessageSquare, BrainCircuit, UploadCloud, Library, Share2, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import './index.css';
 
@@ -105,13 +105,37 @@ function App() {
                 <div style={{ padding: '8px', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>No sources added yet.</div>
               ) : (
                 documents.map((doc, i) => (
-                  <div key={i} style={{ 
+                  <div key={i} className="source-item" style={{ 
                     display: 'flex', alignItems: 'center', gap: '8px', 
                     padding: '8px', borderRadius: 'var(--radius-md)',
-                    fontSize: '0.875rem', color: 'var(--text-secondary)'
+                    fontSize: '0.875rem', color: 'var(--text-secondary)',
+                    justifyContent: 'space-between',
+                    group: 'source'
                   }}>
-                    <FileText size={14} style={{ flexShrink: 0 }} />
-                    <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                      <FileText size={14} style={{ flexShrink: 0 }} />
+                      <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{doc}</span>
+                    </div>
+                    <button 
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (window.confirm(`Are you sure you want to delete ${doc}?`)) {
+                          try {
+                            await axios.delete(`${API_BASE}/documents/${doc}`);
+                            fetchDocuments();
+                          } catch (err) {
+                            alert("Failed to delete document");
+                          }
+                        }
+                      }}
+                      style={{ 
+                        background: 'transparent', border: 'none', color: 'var(--text-tertiary)', 
+                        cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' 
+                      }}
+                      className="delete-doc-btn"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 ))
               )}

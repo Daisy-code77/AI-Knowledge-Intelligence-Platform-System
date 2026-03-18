@@ -168,13 +168,15 @@ export default function ChatInterface({ documents }) {
                 flexDirection: 'column',
                 alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start'
               }}>
-                <div style={{ 
+                <div className="glass-panel" style={{ 
                   padding: '16px 20px', 
-                  borderRadius: '16px',
-                  backgroundColor: msg.role === 'user' ? 'var(--bg-tertiary)' : 'rgba(99, 102, 241, 0.1)',
-                  border: msg.role === 'user' ? '1px solid var(--border-color)' : '1px solid rgba(99, 102, 241, 0.2)',
+                  backgroundColor: msg.role === 'user' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(28, 28, 33, 0.6)',
+                  border: msg.role === 'user' ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid var(--border-color)',
                   fontSize: '0.95rem',
-                  lineHeight: '1.6'
+                  lineHeight: '1.7',
+                  whiteSpace: 'pre-wrap',
+                  color: 'var(--text-primary)',
+                  boxShadow: msg.role === 'user' ? '0 4px 12px rgba(99, 102, 241, 0.1)' : 'var(--shadow-md)'
                 }}>
                   {msg.text}
                 </div>
