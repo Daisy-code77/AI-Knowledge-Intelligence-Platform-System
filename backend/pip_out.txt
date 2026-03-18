@@ -1,0 +1,17 @@
+Collecting fastapi==0.109.0 (from -r requirements.txt (line 1))
+  Using cached fastapi-0.109.0-py3-none-any.whl.metadata (24 kB)
+Collecting uvicorn==0.27.0.post1 (from -r requirements.txt (line 2))
+  Using cached uvicorn-0.27.0.post1-py3-none-any.whl.metadata (6.4 kB)
+Collecting python-multipart==0.0.9 (from -r requirements.txt (line 3))
+  Using cached python_multipart-0.0.9-py3-none-any.whl.metadata (2.5 kB)
+Collecting PyPDF2==3.0.1 (from -r requirements.txt (line 4))
+  Using cached pypdf2-3.0.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting python-docx==1.1.0 (from -r requirements.txt (line 5))
+  Using cached python_docx-1.1.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting sentence-transformers==2.3.1 (from -r requirements.txt (line 6))
+  Using cached sentence_transformers-2.3.1-py3-none-any.whl.metadata (11 kB)
+ERROR: Could not find a version that satisfies the requirement faiss-cpu==1.7.4 (from versions: 1.8.0, 1.8.0.post1, 1.9.0, 1.9.0.post1, 1.10.0, 1.11.0, 1.11.0.post1, 1.12.0, 1.13.0, 1.13.1, 1.13.2)
+ERROR: No matching distribution found for faiss-cpu==1.7.4
+
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
