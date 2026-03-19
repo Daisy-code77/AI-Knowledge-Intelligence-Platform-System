@@ -127,73 +127,77 @@ export default function ChatInterface({ documents }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: 'var(--bg-primary)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: 'transparent' }}>
       
       {/* Header */}
-      <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ padding: '24px 40px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>Knowledge Chat</h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-            Ask questions based on your {documents.length} uploaded document(s).
+          <h2 className="text-gradient" style={{ fontSize: '1.5rem', fontWeight: '700' }}>Knowledge Chat</h2>
+          <p style={{ fontSize: '0.9rem', color: 'hsl(var(--text-tertiary))', marginTop: '4px' }}>
+            Interacting with your {documents.length} knowledge source(s).
           </p>
         </div>
       </div>
-
+ 
       {/* Messages Area */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '32px' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '40px' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '32px' }}>
           
           {messages.map((msg, idx) => (
             <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
               key={idx} 
-              style={{ display: 'flex', gap: '16px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}
+              style={{ display: 'flex', gap: '20px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}
             >
               
               {/* Avatar */}
               <div style={{ 
-                width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
+                width: '42px', height: '42px', borderRadius: '14px', flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backgroundColor: msg.role === 'user' ? 'var(--bg-tertiary)' : 'var(--accent-primary)',
-                color: 'white'
+                background: msg.role === 'user' ? 'var(--bg-surface-light)' : 'linear-gradient(135deg, hsl(var(--accent-primary)), hsl(var(--accent-secondary)))',
+                color: 'white',
+                boxShadow: msg.role === 'ai' ? '0 8px 16px var(--accent-glow)' : 'none',
+                marginTop: '4px'
               }}>
-                {msg.role === 'user' ? <User size={18} /> : <Bot size={18} />}
+                {msg.role === 'user' ? <User size={20} /> : <Bot size={20} />}
               </div>
-
-              {/* Message Bubble + Citations */}
+ 
+              {/* Message Content */}
               <div style={{ 
-                maxWidth: '85%',
+                maxWidth: '80%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start'
               }}>
                 <div className="glass-panel" style={{ 
-                  padding: '16px 20px', 
-                  backgroundColor: msg.role === 'user' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(28, 28, 33, 0.6)',
-                  border: msg.role === 'user' ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid var(--border-color)',
-                  fontSize: '0.95rem',
-                  lineHeight: '1.7',
-                  whiteSpace: 'pre-wrap',
-                  color: 'var(--text-primary)',
-                  boxShadow: msg.role === 'user' ? '0 4px 12px rgba(99, 102, 241, 0.1)' : 'var(--shadow-md)'
+                  padding: '20px 24px', 
+                  backgroundColor: msg.role === 'user' ? 'hsla(var(--accent-primary), 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                  border: msg.role === 'user' ? '1px solid hsla(var(--accent-primary), 0.3)' : '1px solid var(--border-medium)',
+                  borderRadius: msg.role === 'user' ? '24px 4px 24px 24px' : '4px 24px 24px 24px',
+                  fontSize: '1rem',
+                  lineHeight: '1.75',
+                  color: 'hsl(var(--text-primary))'
                 }}>
-                  {msg.text}
+                  <div className="markdown-content">
+                    {msg.text}
+                  </div>
                 </div>
-
+ 
                 {/* Citations block for AI */}
                 {msg.role === 'ai' && msg.citations && msg.citations.length > 0 && (
-                  <div style={{ marginTop: '12px', width: '100%' }}>
-                    <div style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Info size={12} /> Sources Used
+                  <div style={{ marginTop: '16px', width: '100%' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: '700', color: 'hsl(var(--text-tertiary))', textTransform: 'uppercase', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px', letterSpacing: '0.05em' }}>
+                      <Info size={12} /> Verified Sources
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                      {/* Deduplicate sources for pill badges */}
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                       {Array.from(new Set(msg.citations.map(c => c.source))).map((source, i) => (
                         <span key={i} style={{ 
-                          fontSize: '0.75rem', padding: '4px 10px', 
-                          backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)', 
-                          borderRadius: 'var(--radius-full)', color: 'var(--text-secondary)'
+                          fontSize: '0.75rem', padding: '6px 14px', 
+                          backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-subtle)', 
+                          borderRadius: 'var(--radius-full)', color: 'hsl(var(--text-secondary))',
+                          fontWeight: '500'
                         }}>
                           {source}
                         </span>
@@ -205,115 +209,132 @@ export default function ChatInterface({ documents }) {
                 {msg.role === 'ai' && (
                   <button 
                     onClick={() => speakText(msg.text)}
-                    style={{ marginTop: '8px', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', alignSelf: 'flex-start' }}
+                    style={{ 
+                      marginTop: '12px', background: 'none', border: 'none', 
+                      color: 'hsl(var(--text-tertiary))', cursor: 'pointer', 
+                      display: 'flex', alignItems: 'center', gap: '6px', 
+                      fontSize: '0.75rem', fontWeight: '500', alignSelf: 'flex-start',
+                      transition: 'color 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = 'hsl(var(--accent-primary))'}
+                    onMouseLeave={(e) => e.target.style.color = 'hsl(var(--text-tertiary))'}
                   >
-                    <Volume2 size={14} /> Read Aloud
+                    <Volume2 size={14} /> Read Response
                   </button>
                 )}
               </div>
-
+ 
             </motion.div>
           ))}
-
+ 
           {isLoading && (
-            <div style={{ display: 'flex', gap: '16px' }}>
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }}
+              style={{ display: 'flex', gap: '20px' }}
+            >
                <div style={{ 
-                width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
+                width: '42px', height: '42px', borderRadius: '14px', flexShrink: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backgroundColor: 'var(--accent-primary)', color: 'white'
+                background: 'linear-gradient(135deg, hsl(var(--accent-primary)), hsl(var(--accent-secondary)))', 
+                color: 'white',
+                boxShadow: '0 8px 16px var(--accent-glow)'
               }}>
-                <Loader2 size={18} className="spin" style={{ animation: 'spin 1s linear infinite' }} />
-                <style dangerouslySetInnerHTML={{__html: `@keyframes spin { 100% { transform: rotate(360deg); } }`}} />
+                <Loader2 size={20} className="spin" />
               </div>
-              <div style={{ padding: '16px 20px', borderRadius: '16px', backgroundColor: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.2)', color: 'var(--text-secondary)' }}>
-                Thinking...
+              <div className="glass-panel" style={{ padding: '20px 24px', borderRadius: '4px 24px 24px 24px', color: 'hsl(var(--text-secondary))', fontStyle: 'italic' }}>
+                Consulting your knowledge base...
               </div>
-            </div>
+            </motion.div>
           )}
-
+ 
           <div ref={messagesEndRef} />
         </div>
       </div>
-
+ 
       {/* Input Area */}
-      <div style={{ padding: '24px 32px', backgroundColor: 'var(--bg-primary)', borderTop: '1px solid var(--border-color)' }}>
-        <form onSubmit={handleSend} style={{ maxWidth: '800px', margin: '0 auto', position: 'relative' }}>
-          <input 
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={documents.length > 0 ? "Ask a question about your documents..." : "Upload documents to start asking questions..."}
-            disabled={isLoading || documents.length === 0}
-            style={{
-              width: '100%',
-              padding: '16px 24px',
-              paddingRight: '60px',
-              borderRadius: 'var(--radius-full)',
-              backgroundColor: 'var(--bg-secondary)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-primary)',
-              fontSize: '1rem',
-              outline: 'none',
-              transition: 'all 0.2s',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--accent-primary)'}
-            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
-          />
-          <button 
-            type="submit"
-            disabled={isLoading || !input.trim() || documents.length === 0}
-            style={{
-              position: 'absolute',
-              right: '8px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: (input.trim() && !isLoading && documents.length > 0) ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
-              color: 'white',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: (input.trim() && !isLoading && documents.length > 0) ? 'pointer' : 'not-allowed',
-              transition: 'all 0.2s'
-            }}
-          >
-            <Send size={18} style={{ marginLeft: '2px' }} />
-          </button>
+      <div style={{ padding: '32px 40px', borderTop: '1px solid var(--border-subtle)' }}>
+        <form onSubmit={handleSend} style={{ maxWidth: '900px', margin: '0 auto', position: 'relative' }}>
+          <div style={{ position: 'relative', width: '100%' }}>
+            <input 
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={documents.length > 0 ? "Ask anything about your data..." : "Upload documents to unlock the assistant"}
+              disabled={isLoading || documents.length === 0}
+              style={{
+                width: '100%',
+                padding: '18px 120px 18px 28px',
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'rgba(255,255,255,0.03)',
+                border: '1px solid var(--border-medium)',
+                color: 'hsl(var(--text-primary))',
+                fontSize: '1rem',
+                outline: 'none',
+                transition: 'all 0.3s var(--ease-premium)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+              }}
+              className="chat-input"
+            />
+            
+            <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: '8px' }}>
+              <button 
+                type="button"
+                onClick={toggleListening}
+                disabled={isLoading || documents.length === 0}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '12px',
+                  backgroundColor: isListening ? '#ef4444' : 'rgba(255,255,255,0.05)',
+                  color: isListening ? 'white' : 'hsl(var(--text-secondary))',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: (documents.length > 0 && !isLoading) ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.3s'
+                }}
+              >
+                {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+              </button>
+ 
+              <button 
+                type="submit"
+                disabled={isLoading || !input.trim() || documents.length === 0}
+                style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '12px',
+                  background: (input.trim() && !isLoading && documents.length > 0) ? 'linear-gradient(135deg, hsl(var(--accent-primary)), hsl(var(--accent-secondary)))' : 'rgba(255,255,255,0.05)',
+                  color: 'white',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: (input.trim() && !isLoading && documents.length > 0) ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.3s',
+                  boxShadow: (input.trim() && !isLoading && documents.length > 0) ? '0 4px 12px var(--accent-glow)' : 'none'
+                }}
+              >
+                <Send size={20} style={{ marginLeft: '2px' }} />
+              </button>
+            </div>
+          </div>
           
-          <button 
-            type="button"
-            onClick={toggleListening}
-            disabled={isLoading || documents.length === 0}
-            style={{
-              position: 'absolute',
-              right: '54px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: isListening ? '#ef4444' : 'transparent',
-              color: isListening ? 'white' : 'var(--text-secondary)',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: (documents.length > 0 && !isLoading) ? 'pointer' : 'not-allowed',
-              transition: 'all 0.2s'
-            }}
-          >
-            {isListening ? <MicOff size={18} /> : <Mic size={18} />}
-          </button>
+          <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.75rem', color: 'hsl(var(--text-tertiary))', letterSpacing: '0.02em' }}>
+            Notebook AI may produce inaccurate information. Always verify with source citations.
+          </div>
         </form>
-        <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-          AI can make mistakes. Verify important information with the cited sources.
-        </div>
       </div>
-
+ 
+      <style dangerouslySetInnerHTML={{__html: `
+        .chat-input:focus {
+          border-color: hsl(var(--accent-primary));
+          background-color: rgba(255,255,255,0.05);
+          box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 0 0 4px hsla(var(--accent-primary), 0.1);
+        }
+      `}} />
     </div>
   );
 }
